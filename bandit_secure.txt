@@ -1,0 +1,78 @@
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	running on Python 3.12.3
+Run started:2026-09-27 05:11:23.045025+00:00
+
+Test results:
+>> Issue: [B404:blacklist] Consider possible security implications associated with the subprocess module.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/blacklists/blacklist_imports.html#b404-import-subprocess
+   Location: ./user_management_secure.py:15:0
+14	import ast
+15	import subprocess
+16	import secrets
+
+--------------------------------------------------
+>> Issue: [B607:start_process_with_partial_path] Starting a process with a partial executable path
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b607_start_process_with_partial_path.html
+   Location: ./user_management_secure.py:245:17
+244	    try:
+245	        result = subprocess.run(
+246	            ["ping", "-c", "1", host],
+247	            capture_output=True,
+248	            text=True,
+249	            timeout=5,
+250	            shell=False,
+251	        )
+252	        return result.stdout
+
+--------------------------------------------------
+>> Issue: [B603:subprocess_without_shell_equals_true] subprocess call - check for execution of untrusted input.
+   Severity: Low   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/plugins/b603_subprocess_without_shell_equals_true.html
+   Location: ./user_management_secure.py:250:17
+249	            timeout=5,
+250	            shell=False,
+251	        )
+252	        return result.stdout
+253	    except FileNotFoundError:
+254	        # ping isn't installed in this sandbox; that's fine for our purposes -
+255	        # validation + shell=False is what we're actually demonstrating.
+256	        return "(ping utility not available in this environment)"
+257	    except subprocess.TimeoutExpired:
+
+--------------------------------------------------
+>> Issue: [B307:blacklist] Use of possibly insecure function - consider using safer ast.literal_eval.
+   Severity: Medium   Confidence: High
+   CWE: CWE-78 (https://cwe.mitre.org/data/definitions/78.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.4/blacklists/blacklist_calls.html#b307-eval
+   Location: ./user_management_secure.py:291:11
+290	
+291	    return eval(compile(tree, "<calculate>", "eval"))
+292	
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 232
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 3
+		Medium: 1
+		High: 0
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 0
+		High: 4
+Files skipped (0):
